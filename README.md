@@ -24,7 +24,7 @@ python -c 'from getOrgDetails import getOrgOpenTicketIds; print getOrgOpenTicket
 # set userSuspension for userID
 python -c 'from setUserDetails import setUserSuspension; print setUserSuspension(############)'
 
-# set orgNotes for orgID (Sandbox - Universal Exports)
+# set orgNotes for orgID 
 python -c 'from setOrgDetails import setOrgNotes; print setOrgNotes(##########, "Churned on 01.01.2020")'
 
 # churn entire org for orgID
