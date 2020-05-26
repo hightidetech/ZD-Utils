@@ -1,0 +1,76 @@
+#!/bin/bash
+
+#set -x
+
+#usage: ./churnOrg -o orgID -d churnDate
+#example: ./churnOrg -o "360095290972" -d "03.31.20"
+
+usage()
+{
+  echo "usage: $0 [-o orgID ] [-d churnDate ]" 1>&2
+  exit 1
+}
+
+while getopts ":o:d:" a; do
+    case "${a}" in
+        o)
+            orgID=${OPTARG}
+            orgID=`echo $orgID | sed -e 's/ //g'`
+            ;;
+        d)
+            churnDate=${OPTARG}
+            churnDate=`echo $churnDate | sed -e 's/ //g'`
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z "${orgID}" ] || [ -z "${churnDate}" ]; then
+    usage
+fi
+
+
+#precheck 
+#  validate orgID
+#  check for open tickets
+#  check current status*
+
+#  get all users
+orgName=`python -c 'from getOrgDetails import getOrgName; print getOrgName("'$orgID'")'`
+echo "Preparing to suspend all user accounts for $orgName..." 
+
+#suspend all users
+userIds=`python -c 'from getOrgDetails import getOrgMemberships; print getOrgMemberships("'$orgID'")'`
+for uid in `echo $userIds`; do
+  echo -n "Suspending $uid..."
+  suspendedStatus=`python -c 'from setUserDetails import setUserSuspension; print setUserSuspension("'$uid'")'`
+  echo "suspended:$suspendedStatus"
+done
+ 
+#tag as suspended_organization
+orgTags=`python -c 'from setOrgDetails import setMoreOrgTags; print setMoreOrgTags("'$orgID'", "suspended_organization")'`
+echo "Org tags update to $orgTags..."
+
+#add “Churned on $churnDate” to org notes
+orgNotes=`python -c 'from setOrgDetails import setOrgNotes; print setOrgNotes("'$orgID'", "Churned on '$churnDate'...")'`
+echo "Org notes updated to $orgNotes..."
+
+#update org status as Churned
+orgAccountStatus=`python -c 'from setOrgDetails import setOrgAccountStatusField; print setOrgAccountStatusField("'$orgID'", "Churn")'`
+echo "Org Account Status updated to $orgAccountStatus..."
+
+#  get all tickets
+echo "Preparing to solve out all outstanding tickets..."
+ticketIds=`python -c 'from getOrgDetails import getOrgOpenTicketIds; print getOrgOpenTicketIds("'$orgID'")'`
+for ticket in `echo $ticketIds`; do
+  echo -n "Solving $ticket..."
+  ticketStatus=`python -c 'from setTicketDetails import setTicketChurnStatus; print setTicketChurnStatus("'$ticket'")'`
+  echo "status:$ticketStatus"
+done
+
+#tag as churned_organization
+orgTags=`python -c 'from setOrgDetails import setMoreOrgTags; print setMoreOrgTags("'$orgID'", "churned_organization")'`
+echo "Org tags update to $orgTags..."
