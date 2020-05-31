@@ -27,5 +27,8 @@ python -c 'from setUserDetails import setUserSuspension; print setUserSuspension
 # set orgNotes for orgID 
 python -c 'from setOrgDetails import setOrgNotes; print setOrgNotes(##########, "Churned on 01.01.2020")'
 
+# set extID for orgID 
+python -c 'from setOrgDetails import setOrgExternalID; print setOrgExternalID(##########, "EXTERNALIDNUMBER")'
+
 # churn entire org for orgID
 ./churnOrg -o "############" -d "01.01.2020"

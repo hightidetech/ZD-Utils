@@ -60,3 +60,20 @@ def setOrgAccountStatusField(orgID, status):
 
 if __name__=='__setOrgAccountStatusField__':
   sys.exit(main(sys.argv[1]))
+
+def setOrgExternalID(orgID, extID):
+  url = 'https://' + instance + '.zendesk.com/api/v2/organizations/' + str(orgID) + '.json'
+  entity = '{"organization": {"external_id":" + extID + "}}'
+  session.headers.update({'Content-Type': 'application/json'})
+
+  response=session.put(url, data='{"organization": {"external_id":"' + extID + '"}}')
+  #print(response.text)
+  if response.status_code != 200:
+    print('Status:', response.status_code, 'Problem with the request. Exiting.')
+    exit()
+
+  data=response.json()["organization"]
+  return data["external_id"]
+
+if __name__=='__setOrgExternalID':
+  sys.exit(main(sys.argv[1]))
