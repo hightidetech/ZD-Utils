@@ -77,3 +77,22 @@ def setOrgExternalID(orgID, extID):
 
 if __name__=='__setOrgExternalID':
   sys.exit(main(sys.argv[1]))
+
+def setOrgSupportLevel(orgID, orgSL):
+
+  url = 'https://' + instance + '.zendesk.com/api/v2/organizations/' + str(orgID) + '.json'
+  entity = '{"organization": {"organization_fields": {"support_level":" + orgSL + "}}'
+  session.headers.update({'Content-Type': 'application/json'})
+
+  response=session.put(url, data='{"organization": {"organization_fields": {"support_level":"' + orgSL + '"}}')
+  #print(response.text)
+  if response.status_code != 200:
+    print('Status:', response.status_code, 'Problem with the request. Exiting.')
+    exit()
+
+  data=response.json()["organization"]["organization_fields"]
+  return data["support_level"]
+
+
+if __name__=='__setOrgSupportLevel__':
+  sys.exit(main(sys.argv[1]))

@@ -67,3 +67,18 @@ def getOrgOpenTicketIds(orgID):
 
 if __name__=='__getOrgOpenTicketIds__':
     sys.exit(main(sys.argv[1]))
+
+def getOrgSupportLevel(orgID):
+
+  url='https://' + instance + '.zendesk.com/api/v2/organizations/' + str(orgID) + '.json'
+
+  response=session.get(url)
+  if response.status_code != 200:
+      print('Status:', response.status_code, 'Problem with the request. Exiting.')
+      exit()
+  data=response.json()["organization"]["organization_fields"]["support_level"]
+  return data
+
+
+if __name__=='__getOrgSupportLevel':
+    sys.exit(main(sys.argv[1]))
