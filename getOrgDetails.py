@@ -80,5 +80,78 @@ def getOrgSupportLevel(orgID):
   return data
 
 
-if __name__=='__getOrgSupportLevel':
+if __name__=='__getOrgAccountStatus':
+    sys.exit(main(sys.argv[1]))
+
+def getOrgAccountStatus(orgID):
+
+  url='https://' + instance + '.zendesk.com/api/v2/organizations/' + str(orgID) + '.json'
+
+  response=session.get(url)
+  if response.status_code != 200:
+      print('Status:', response.status_code, 'Problem with the request. Exiting.')
+      exit()
+  data=response.json()["organization"]["organization_fields"]["account_status"]
+  return data
+
+
+if __name__=='__getOrgAccountStatus':
+    sys.exit(main(sys.argv[1]))
+
+def getOrgNotes(orgID):
+
+  url='https://' + instance + '.zendesk.com/api/v2/organizations/' + str(orgID) + '.json'
+
+  response=session.get(url)
+  if response.status_code != 200:
+      print('Status:', response.status_code, 'Problem with the request. Exiting.')
+      exit()
+  data=response.json()["organization"]["notes"]
+  return data
+
+
+if __name__=='__getOrgNotes':
+    sys.exit(main(sys.argv[1]))
+
+def getOrgAccountType(orgID):
+
+  url='https://' + instance + '.zendesk.com/api/v2/organizations/' + str(orgID) + '.json'
+
+  response=session.get(url)
+  if response.status_code != 200:
+      print('Status:', response.status_code, 'Problem with the request. Exiting.')
+      exit()
+  data=response.json()["organization"]["organization_fields"]["account_type"]
+  return data
+
+if __name__=='__getOrgAccountType':
+    sys.exit(main(sys.argv[1]))
+
+def getOrgExternalID(orgID):
+
+  url='https://' + instance + '.zendesk.com/api/v2/organizations/' + str(orgID) + '.json'
+
+  response=session.get(url)
+  if response.status_code != 200:
+      print('Status:', response.status_code, 'Problem with the request. Exiting.')
+      exit()
+  data=response.json()["organization"]["external_id"]
+  return data
+
+if __name__=='__getOrgExternalID':
+    sys.exit(main(sys.argv[1]))
+
+def getOrgCreatedDate(orgID):
+
+  url='https://' + instance + '.zendesk.com/api/v2/organizations/' + str(orgID) + '.json'
+
+  response=session.get(url)
+  if response.status_code != 200:
+      print('Status:', response.status_code, 'Problem with the request. Exiting.')
+      exit()
+  data=response.json()["organization"]["created_at"]
+  return data.split('T')[0]
+
+
+if __name__=='__getOrgCreatedDate':
     sys.exit(main(sys.argv[1]))
